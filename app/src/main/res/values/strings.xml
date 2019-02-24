@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">FaceRecognizer</string>
+    <string name="tab_face">얼굴 인식</string>
+    <string name="tab_celebrity_face">유명인 얼굴 인식</string>
+    <string name="from_camera">사진 촬영하기</string>
+    <string name="from_album">앨범 선택하기</string>
+    <string name="close">닫기</string>
+
+    <string name="gender_format">성별은 %s 입니다. (%d%%)</string>
+    <string name="male">남자</string>
+    <string name="female">여자</string>
+
+    <string name="emotion_format">%s 표정 입니다. (%d%%)</string>
+    <string name="angry">화가난</string>
+    <string name="disgust">혐오스러운</string>
+    <string name="fear">두려운</string>
+    <string name="laugh">웃는</string>
+    <string name="neutral">중립의</string>
+    <string name="sad">슬픈</string>
+    <string name="surprise">놀라운</string>
+    <string name="smile">미소짓는</string>
+    <string name="talking">말하는</string>
+
+    <string name="pose_format">%s 포즈 입니다. (%d%%)</string>
+    <string name="part_face">부분적인</string>
+    <string name="false_face">인식할수없는</string>
+    <string name="sunglasses">선글라스 착용하고있는</string>
+    <string name="frontal_face">앞에있는</string>
+    <string name="left_face">좌측에있는</string>
+    <string name="right_face">우측에있는</string>
+    <string name="rotate_face">회전되어있는</string>
+
+    <string name="age_format">나이는 %s 입니다. (%d%%)</string>
+    <string name="celebrity_format">닮은 유명인의 이름은 %s 입니다. (%d%%)</string>
+
+</resources>
