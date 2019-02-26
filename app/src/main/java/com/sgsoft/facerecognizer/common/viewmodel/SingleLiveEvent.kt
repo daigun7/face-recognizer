@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.sgsoft.facerecognizer.common.util
+package com.sgsoft.facerecognizer.common.viewmodel
 
 import android.util.Log
 import androidx.annotation.MainThread
