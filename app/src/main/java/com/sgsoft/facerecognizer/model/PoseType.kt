@@ -36,6 +36,6 @@ enum class PoseType(val value: String) {
             }
         }
 
-        fun fromString(str: String?) : PoseType? = map[str]
+        fun fromString(str: String?): PoseType? = map[str]
     }
 }

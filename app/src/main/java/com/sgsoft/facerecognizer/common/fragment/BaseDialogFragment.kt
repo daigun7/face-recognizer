@@ -13,7 +13,7 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-abstract class BaseDialogFragment<in V: IView, T: IPresenter<V>> : AppCompatDialogFragment(),
+abstract class BaseDialogFragment<in V : IView, T : IPresenter<V>> : AppCompatDialogFragment(),
         HasSupportFragmentInjector, IView {
 
     @Inject
@@ -25,6 +25,7 @@ abstract class BaseDialogFragment<in V: IView, T: IPresenter<V>> : AppCompatDial
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
 
+        @Suppress("UNCHECKED_CAST")
         mPresenter.attachView(this as V)
     }
 

@@ -21,6 +21,6 @@ enum class GenderType(val value: String) {
             }
         }
 
-        fun fromString(str: String?) : GenderType? = map[str]
+        fun fromString(str: String?): GenderType? = map[str]
     }
 }

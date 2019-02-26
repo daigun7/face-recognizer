@@ -14,13 +14,13 @@ import dagger.android.ContributesAndroidInjector
 abstract class MainModule {
     @ActivityScoped
     @Binds
-    abstract fun mainPresenter(presenter: MainPresenter) : MainContract.Presenter
+    abstract fun mainPresenter(presenter: MainPresenter): MainContract.Presenter
 
     @FragmentScoped
     @ContributesAndroidInjector(modules = [FaceTabModule::class])
-    abstract fun faceTabFragment() : FaceTabFragment
+    abstract fun faceTabFragment(): FaceTabFragment
 
     @FragmentScoped
     @ContributesAndroidInjector(modules = [CelebrityFaceTabModule::class])
-    abstract fun celebrityFaceTabFragment() : CelebrityFaceTabFragment
+    abstract fun celebrityFaceTabFragment(): CelebrityFaceTabFragment
 }

@@ -42,6 +42,6 @@ enum class EmotionType(val value: String) {
             }
         }
 
-        fun fromString(str: String?) : EmotionType? = map[str]
+        fun fromString(str: String?): EmotionType? = map[str]
     }
 }

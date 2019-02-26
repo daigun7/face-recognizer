@@ -12,7 +12,7 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-abstract class BaseFragment<in V: IView, T: IPresenter<V>> : Fragment(),
+abstract class BaseFragment<in V : IView, T : IPresenter<V>> : Fragment(),
         HasSupportFragmentInjector, IView {
 
     @Inject
@@ -24,6 +24,7 @@ abstract class BaseFragment<in V: IView, T: IPresenter<V>> : Fragment(),
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
 
+        @Suppress("UNCHECKED_CAST")
         mPresenter.attachView(this as V)
     }
 

@@ -16,7 +16,7 @@ import dagger.android.HasFragmentInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-abstract class BaseActivity<in V: IView, T: IPresenter<V>> : AppCompatActivity(),
+abstract class BaseActivity<in V : IView, T : IPresenter<V>> : AppCompatActivity(),
         IView, HasFragmentInjector, HasSupportFragmentInjector {
 
     @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -28,6 +28,7 @@ abstract class BaseActivity<in V: IView, T: IPresenter<V>> : AppCompatActivity()
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
+        @Suppress("UNCHECKED_CAST")
         mPresenter.attachView(this as V)
     }
 
@@ -37,7 +38,7 @@ abstract class BaseActivity<in V: IView, T: IPresenter<V>> : AppCompatActivity()
         mPresenter.detachView()
     }
 
-    override fun supportFragmentInjector() : AndroidInjector<Fragment> = supportFragmentInjector
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = supportFragmentInjector
 
     override fun fragmentInjector(): AndroidInjector<android.app.Fragment> = frameworkFragmentInjector
 
