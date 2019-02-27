@@ -1,6 +1,8 @@
 package com.sgsoft.facerecognizer.ui
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -64,6 +66,13 @@ class MainActivity : BaseActivity<MainContract.View, MainContract.Presenter>(), 
                 })
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check()
+    }
+
+    fun onClickLogo() {
+        val url = getString(R.string.naver_developers_url)
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+
+        startActivity(intent)
     }
 
     class TabPagerAdapter(fm: FragmentManager, private val tabCount: Int) : FragmentStatePagerAdapter(fm) {
