@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="item" type="com.sgsoft.facerecognizer.model.Face"/>
+        <variable name="item" type="com.sgsoft.facerecognizer.model.FaceEntity"/>
     </data>
 
     <LinearLayout
@@ -19,28 +19,28 @@
             android:id="@+id/tv_age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{item.age}"
+            android:text="@{@string/age_format(item.age.value, item.age.confidence)}"
             style="?android:attr/textAppearanceMedium"/>
 
         <TextView
             android:id="@+id/tv_gender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{item.gender}"
+            android:text="@{@string/gender_format(item.gender.value, item.gender.confidence)}"
             style="?android:attr/textAppearanceMedium"/>
 
         <TextView
             android:id="@+id/tv_emotion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{item.emotion}"
+            android:text="@{@string/emotion_format(item.emotion.value, item.emotion.confidence)}"
             style="?android:attr/textAppearanceMedium"/>
 
         <TextView
             android:id="@+id/tv_pose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{item.pose}"
+            android:text="@{@string/pose_format(item.pose.value, item.pose.confidence)}"
             style="?android:attr/textAppearanceMedium"/>
 
     </LinearLayout>

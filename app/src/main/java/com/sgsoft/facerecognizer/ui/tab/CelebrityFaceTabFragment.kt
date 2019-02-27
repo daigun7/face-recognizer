@@ -10,14 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import com.sgsoft.facerecognizer.R
-import com.sgsoft.facerecognizer.api.CFRModel
 import com.sgsoft.facerecognizer.common.fragment.BaseFragment
 import com.sgsoft.facerecognizer.extension.createTempFile
 import com.sgsoft.facerecognizer.extension.getRealPath
+import com.sgsoft.facerecognizer.model.FaceEntity
 import com.sgsoft.facerecognizer.ui.result.ResultFragment
 import kotlinx.android.synthetic.main.fragment_face.*
 import java.io.File
 import java.io.IOException
+import java.util.*
 import javax.inject.Inject
 
 class CelebrityFaceTabFragment : BaseFragment<CelebrityFaceTabContract.View, CelebrityFaceTabContract.Presenter>(), CelebrityFaceTabContract.View {
@@ -69,15 +70,16 @@ class CelebrityFaceTabFragment : BaseFragment<CelebrityFaceTabContract.View, Cel
         }
     }
 
-    override fun onFaceRecognized(model: CFRModel, file: File) {
-        val arguments = Bundle()
-        arguments.putParcelable(ResultFragment.ARGUMENT_MODEL, model)
-        arguments.putString(ResultFragment.ARGUMENT_FILE_PATH, file.absolutePath)
+    override fun onFaceRecognized(faces: List<FaceEntity>, file: File) {
+        val arguments = Bundle().apply {
+            putParcelableArrayList(ResultFragment.ARGUMENT_FACES, faces as ArrayList<FaceEntity>)
+            putString(ResultFragment.ARGUMENT_IMAGE, file.absolutePath)
+        }
 
         val fragment = ResultFragment()
         fragment.arguments = arguments
 
-        fragmentManager?.also {
+        fragmentManager?.let {
             fragment.show(it, ResultFragment::class.java.name)
         }
     }

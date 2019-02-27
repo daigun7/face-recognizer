@@ -12,19 +12,18 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.sgsoft.facerecognizer.BR
 import com.sgsoft.facerecognizer.R
-import com.sgsoft.facerecognizer.api.CFRModel
 import com.sgsoft.facerecognizer.databinding.FragmentResultBinding
 import com.sgsoft.facerecognizer.databinding.ItemCelebrityFaceBinding
 import com.sgsoft.facerecognizer.databinding.ItemFaceBinding
-import com.sgsoft.facerecognizer.model.Face
+import com.sgsoft.facerecognizer.model.FaceEntity
 
 class ResultFragment : AppCompatDialogFragment() {
-    private  lateinit var mModel: CFRModel
-    private  lateinit var mFilePath: String
+    private var mFaces: List<FaceEntity>? = null
+    private var mImage: String? = null
 
     companion object {
-        const val ARGUMENT_MODEL = "model"
-        const val ARGUMENT_FILE_PATH = "file_path"
+        const val ARGUMENT_FACES = "faces"
+        const val ARGUMENT_IMAGE = "image"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,8 +32,8 @@ class ResultFragment : AppCompatDialogFragment() {
         setStyle(STYLE_NO_FRAME, R.style.AppTheme)
 
         arguments?.also {
-            mModel = it.getParcelable(ARGUMENT_MODEL) as CFRModel
-            mFilePath = it.getString(ARGUMENT_FILE_PATH) as String
+            mFaces = it.getParcelableArrayList(ARGUMENT_FACES)
+            mImage = it.getString(ARGUMENT_IMAGE) as String
         }
     }
 
@@ -42,14 +41,16 @@ class ResultFragment : AppCompatDialogFragment() {
         val binding: FragmentResultBinding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_result, container, false)
 
-        val image = mFilePath
-        val items = mModel.faces.map {
-            Face.from(resources, it)
+        val viewModel = ViewModelProviders.of(this).get(ResultViewModel::class.java)
+
+        mImage?.let {
+            viewModel.setImage(it)
         }
 
-        val viewModel = ViewModelProviders.of(this).get(ResultViewModel::class.java)
-        viewModel.setImage(image)
-        viewModel.setItems(items)
+        mFaces?.let {
+            viewModel.setItems(it)
+        }
+
         viewModel.clickClose.observe(this, Observer { dismiss() })
 
         binding.viewModel = viewModel
@@ -59,7 +60,7 @@ class ResultFragment : AppCompatDialogFragment() {
     }
 
     class FaceAdapter : RecyclerView.Adapter<BindingViewHolder>() {
-        var items: List<Face> = listOf()
+        var items: List<FaceEntity> = listOf()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingViewHolder {
             return if(viewType == BindingViewType.CelebrityFaceView.value) {

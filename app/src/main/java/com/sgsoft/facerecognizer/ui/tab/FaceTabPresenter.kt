@@ -11,26 +11,21 @@ import com.bumptech.glide.request.RequestOptions
 import com.sgsoft.facerecognizer.common.presenter.DisposablePresenter
 import com.sgsoft.facerecognizer.common.util.RotateTransformation
 import com.sgsoft.facerecognizer.common.util.SchedulerProvider
-import com.sgsoft.facerecognizer.network.api.ApiServiceFactory
-import com.sgsoft.facerecognizer.network.api.CFRApi
-import com.sgsoft.facerecognizer.network.api.Constants
+import com.sgsoft.facerecognizer.data.FaceDataSource
+import com.sgsoft.facerecognizer.model.EmotionType
+import com.sgsoft.facerecognizer.model.GenderType
+import com.sgsoft.facerecognizer.model.PoseType
 import io.reactivex.Flowable
 import io.reactivex.Single
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
-import java.util.concurrent.TimeUnit
 
-class FaceTabPresenter : DisposablePresenter<FaceTabContract.View>(), FaceTabContract.Presenter {
-    companion object {
-        const val TIMEOUT_CFR = 15_000L
-    }
+class FaceTabPresenter(private val dataSource: FaceDataSource)
+    : DisposablePresenter<FaceTabContract.View>(), FaceTabContract.Presenter {
 
     override fun recognizeFace(context: Context, file: File) {
-        var orientation = ExifInterface(file.absolutePath).getAttributeInt(
+        val orientation = ExifInterface(file.absolutePath).getAttributeInt(
                 ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
 
         val options = RequestOptions()
@@ -67,13 +62,34 @@ class FaceTabPresenter : DisposablePresenter<FaceTabContract.View>(), FaceTabCon
                                     .subscribeOn(SchedulerProvider.io())
                                     .observeOn(SchedulerProvider.ui())
                         }
-                        .flatMap {
-                            ApiServiceFactory.setBaseUrl(Constants.CFR_API_HOST)
-                                    .setTimeout(TIMEOUT_CFR, TimeUnit.MILLISECONDS)
-                                    .createService(CFRApi::class.java)
-                                    .face(Constants.CLIENT_ID, Constants.CLIENT_SECRET, createMultipartBody(it))
+                        .flatMapSingle {
+                            dataSource.getFaces(it)
                                     .subscribeOn(SchedulerProvider.io())
                                     .observeOn(SchedulerProvider.ui())
+                        }
+                        .map { faces ->
+                            faces.forEach { face ->
+                                face.gender?.apply {
+                                    GenderType.fromString(value)?.getTextResId()?.let {
+                                        value = context.resources.getString(it)
+                                    }
+                                }
+
+                                face.emotion?.apply {
+                                    EmotionType.fromString(value)?.getTextResId()?.let {
+                                        value = context.resources.getString(it)
+                                    }
+
+                                }
+
+                                face.pose?.apply {
+                                    PoseType.fromString(value)?.getTextResId()?.let {
+                                        value = context.resources.getString(it)
+                                    }
+
+                                }
+                            }
+                            faces
                         }
                         .doOnSubscribe {
                             mView?.showProgress()
@@ -88,11 +104,5 @@ class FaceTabPresenter : DisposablePresenter<FaceTabContract.View>(), FaceTabCon
                             it.printStackTrace()
                         })
         )
-    }
-
-    private fun createMultipartBody(file: File) : MultipartBody.Part {
-        return RequestBody.create(MediaType.parse("image/*"), file).let {
-            MultipartBody.Part.createFormData("image", file.name, it)
-        }
     }
 }
