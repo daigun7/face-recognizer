@@ -33,7 +33,7 @@ class ResultFragment : AppCompatDialogFragment() {
 
         arguments?.also {
             mFaces = it.getParcelableArrayList(ARGUMENT_FACES)
-            mImage = it.getString(ARGUMENT_IMAGE) as String
+            mImage = it.getString(ARGUMENT_IMAGE)
         }
     }
 

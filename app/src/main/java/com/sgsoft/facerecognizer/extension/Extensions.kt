@@ -25,8 +25,6 @@ fun Uri.getRealPath(resolver: ContentResolver): String? {
     )?.use { cursor ->
         cursor.moveToFirst()
 
-        return cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA).let {
-            cursor.getString(it)
-        }
+        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA).let { cursor.getString(it) }
     }
 }
