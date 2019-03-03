@@ -12,8 +12,8 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.sgsoft.facerecognizer.R
 import com.sgsoft.facerecognizer.common.activity.BaseActivity
-import com.sgsoft.facerecognizer.ui.tab.CelebrityFaceTabFragment
-import com.sgsoft.facerecognizer.ui.tab.FaceTabFragment
+import com.sgsoft.facerecognizer.ui.tab.celebrity.CelebrityFaceTabFragment
+import com.sgsoft.facerecognizer.ui.tab.face.FaceTabFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sgsoft.facerecognizer.ui.tab.face.FaceTabViewModel"/>
+            type="com.sgsoft.facerecognizer.ui.tab.celebrity.CelebrityFaceTabViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -2,10 +2,10 @@ package com.sgsoft.facerecognizer.ui
 
 import com.sgsoft.facerecognizer.di.scope.ActivityScoped
 import com.sgsoft.facerecognizer.di.scope.FragmentScoped
-import com.sgsoft.facerecognizer.ui.tab.CelebrityFaceTabFragment
-import com.sgsoft.facerecognizer.ui.tab.CelebrityFaceTabModule
-import com.sgsoft.facerecognizer.ui.tab.FaceTabFragment
-import com.sgsoft.facerecognizer.ui.tab.FaceTabModule
+import com.sgsoft.facerecognizer.ui.tab.celebrity.CelebrityFaceTabFragment
+import com.sgsoft.facerecognizer.ui.tab.celebrity.CelebrityFaceTabModule
+import com.sgsoft.facerecognizer.ui.tab.face.FaceTabFragment
+import com.sgsoft.facerecognizer.ui.tab.face.FaceTabModule
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

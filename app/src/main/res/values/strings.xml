@@ -32,7 +32,7 @@
 
     <string name="age_format">나이는 %s 입니다. (%d%%)</string>
     <string name="celebrity_format">닮은 유명인의 이름은 %s 입니다. (%d%%)</string>
-
+    <string name="no_matches_found">얼굴을 인식할 수 없습니다.</string>
 
     <string name="naver_developers_url">http://developers.naver.com</string>
 

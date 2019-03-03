@@ -1,18 +1,22 @@
-package com.sgsoft.facerecognizer.ui.tab
+package com.sgsoft.facerecognizer.ui.tab.celebrity
 
-import android.content.Context
+import android.app.Application
 import android.graphics.Bitmap
 import android.media.ExifInterface
 import android.os.Environment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
+import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.RequestOptions
-import com.sgsoft.facerecognizer.common.presenter.DisposablePresenter
 import com.sgsoft.facerecognizer.common.util.RotateTransformation
 import com.sgsoft.facerecognizer.common.util.SchedulerProvider
-import com.sgsoft.facerecognizer.data.FaceDataSource
+import com.sgsoft.facerecognizer.common.viewmodel.DisposableAndroidViewModel
+import com.sgsoft.facerecognizer.common.viewmodel.SingleLiveEvent
 import com.sgsoft.facerecognizer.model.EmotionType
+import com.sgsoft.facerecognizer.model.FaceEntity
 import com.sgsoft.facerecognizer.model.GenderType
 import com.sgsoft.facerecognizer.model.PoseType
 import io.reactivex.Flowable
@@ -21,10 +25,22 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.*
 
-class FaceTabPresenter(private val dataSource: FaceDataSource)
-    : DisposablePresenter<FaceTabContract.View>(), FaceTabContract.Presenter {
+class CelebrityFaceTabViewModel(private val app: Application, private val useCase: GetCelebrityFacesUseCase)
+    : DisposableAndroidViewModel(app) {
 
-    override fun recognizeFace(context: Context, file: File) {
+    private val _loading = MutableLiveData<Boolean>()
+    private val _faceList = MutableLiveData<List<FaceEntity>>()
+    private val _error = MutableLiveData<String>()
+    private val _clickCamera = SingleLiveEvent<Unit>()
+    private val _clickAlbum = SingleLiveEvent<Unit>()
+
+    val loading: LiveData<Boolean> get() = _loading
+    val faceList: LiveData<List<FaceEntity>> get() = _faceList
+    val error: LiveData<String> get() = _error
+    val clickCamera: LiveData<Unit> get() = _clickCamera
+    val clickAlbum: LiveData<Unit> get() = _clickAlbum
+
+    private fun getBitmapFromFile(file: File): FutureTarget<Bitmap> {
         val orientation = ExifInterface(file.absolutePath).getAttributeInt(
                 ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
 
@@ -35,35 +51,42 @@ class FaceTabPresenter(private val dataSource: FaceDataSource)
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
 
-        val future = Glide.with(context)
+        return Glide.with(app)
                 .asBitmap()
                 .load(file)
                 .apply(options)
                 .submit()
+    }
 
-        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val fileName = "${Date().time}.jpg"
-        val newFile = File(storageDir, fileName)
+    private fun getFileFromBitmap(bitmap: Bitmap): Single<File> {
+        return Single.create<File> { emitter ->
+            val storageDir = app.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+            val fileName = "${Date().time}.jpg"
+            val file = File(storageDir, fileName)
+            val out = FileOutputStream(file)
+
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+            out.flush()
+            out.close()
+
+            emitter.onSuccess(file)
+        }
+                .subscribeOn(SchedulerProvider.io())
+                .observeOn(SchedulerProvider.ui())
+    }
+
+    fun getCelebrityFaces(file: File) {
+        val future = getBitmapFromFile(file)
 
         addDisposable(
                 Flowable.fromFuture(future)
                         .subscribeOn(SchedulerProvider.io())
                         .observeOn(SchedulerProvider.ui())
                         .flatMapSingle {
-                            Single.create<File> { emitter ->
-                                val out = FileOutputStream(newFile)
-                                it.compress(Bitmap.CompressFormat.JPEG, 90, out)
-
-                                out.flush()
-                                out.close()
-
-                                emitter.onSuccess(newFile)
-                            }
-                                    .subscribeOn(SchedulerProvider.io())
-                                    .observeOn(SchedulerProvider.ui())
+                            getFileFromBitmap(it)
                         }
                         .flatMapSingle {
-                            dataSource.getFaces(it)
+                            useCase.execute(it)
                                     .subscribeOn(SchedulerProvider.io())
                                     .observeOn(SchedulerProvider.ui())
                         }
@@ -71,38 +94,46 @@ class FaceTabPresenter(private val dataSource: FaceDataSource)
                             faces.forEach { face ->
                                 face.gender?.apply {
                                     GenderType.fromString(value)?.getTextResId()?.let {
-                                        value = context.resources.getString(it)
+                                        value = app.resources.getString(it)
                                     }
                                 }
 
                                 face.emotion?.apply {
                                     EmotionType.fromString(value)?.getTextResId()?.let {
-                                        value = context.resources.getString(it)
+                                        value = app.resources.getString(it)
                                     }
-
                                 }
 
                                 face.pose?.apply {
                                     PoseType.fromString(value)?.getTextResId()?.let {
-                                        value = context.resources.getString(it)
+                                        value = app.resources.getString(it)
                                     }
-
                                 }
                             }
                             faces
                         }
                         .doOnSubscribe {
-                            mView?.showProgress()
+                            _loading.postValue(true)
                         }
                         .doOnTerminate {
-                            Glide.with(context).clear(future)
-                            mView?.hideProgress()
+                            _loading.postValue(false)
+                            Glide.with(app).clear(future)
                         }
                         .subscribe({
-                            mView?.onFaceRecognized(it, newFile)
+                            _faceList.postValue(it)
+
                         }, {
                             it.printStackTrace()
+                            _error.postValue(it.message)
                         })
         )
+    }
+
+    fun clickCamera() {
+        _clickCamera.call()
+    }
+
+    fun clickAlbum() {
+        _clickAlbum.call()
     }
 }
