@@ -1,4 +1,4 @@
-package com.sgsoft.facerecognizer.network.api
+package com.sgsoft.facerecognizer
 
 object Constants {
     const val CLIENT_ID = ""
