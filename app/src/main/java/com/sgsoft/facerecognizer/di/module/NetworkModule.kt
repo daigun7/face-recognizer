@@ -1,7 +1,7 @@
 package com.sgsoft.facerecognizer.di.module
 
 import com.sgsoft.facerecognizer.BuildConfig
-import com.sgsoft.facerecognizer.network.api.CFRApi
+import com.sgsoft.facerecognizer.api.CFRApi
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

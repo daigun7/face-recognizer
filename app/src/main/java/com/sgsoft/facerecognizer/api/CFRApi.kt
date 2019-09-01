@@ -1,6 +1,5 @@
-package com.sgsoft.facerecognizer.network.api
+package com.sgsoft.facerecognizer.api
 
-import com.sgsoft.facerecognizer.api.CFRData
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import retrofit2.http.Header

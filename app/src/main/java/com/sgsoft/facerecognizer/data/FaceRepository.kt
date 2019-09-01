@@ -1,9 +1,9 @@
 package com.sgsoft.facerecognizer.data
 
 import com.sgsoft.facerecognizer.Constants
+import com.sgsoft.facerecognizer.api.CFRApi
 import com.sgsoft.facerecognizer.common.util.SchedulerProvider
 import com.sgsoft.facerecognizer.model.*
-import com.sgsoft.facerecognizer.network.api.CFRApi
 import io.reactivex.Single
 import okhttp3.MediaType
 import okhttp3.MultipartBody
