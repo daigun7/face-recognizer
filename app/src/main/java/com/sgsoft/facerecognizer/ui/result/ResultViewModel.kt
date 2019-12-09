@@ -1,13 +1,12 @@
 package com.sgsoft.facerecognizer.ui.result
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.sgsoft.facerecognizer.common.viewmodel.SingleLiveEvent
 import com.sgsoft.facerecognizer.model.FaceEntity
 
-class ResultViewModel(app: Application) : AndroidViewModel(app) {
+class ResultViewModel : ViewModel() {
     private val _image = MutableLiveData<String>()
     private val _items = MutableLiveData<List<FaceEntity>>()
     private val _clickClose = SingleLiveEvent<Unit>()

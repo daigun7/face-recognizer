@@ -7,10 +7,11 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils
 import com.bumptech.glide.util.Util
 import java.nio.ByteBuffer
 import java.security.MessageDigest
+import java.util.*
 
 class RotateTransformation(private val exifOrientation: Int) : BitmapTransformation() {
     companion object {
-        const val ID: String = "com.sgsoft.facerecognizer.common.util.RotateTransformation"
+        val ID: String = UUID.randomUUID().toString()
     }
 
     override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
@@ -29,8 +30,9 @@ class RotateTransformation(private val exifOrientation: Int) : BitmapTransformat
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
         messageDigest.update(ID.toByteArray())
 
-        ByteBuffer.allocate(4).putInt(exifOrientation).array().let {
-            messageDigest.update(it)
-        }
+        ByteBuffer.allocate(4)
+                .putInt(exifOrientation)
+                .array()
+                .also { messageDigest.update(it) }
     }
 }

@@ -2,7 +2,6 @@ package com.sgsoft.facerecognizer.data
 
 import com.sgsoft.facerecognizer.Constants
 import com.sgsoft.facerecognizer.api.CFRApi
-import com.sgsoft.facerecognizer.common.util.SchedulerProvider
 import com.sgsoft.facerecognizer.model.*
 import io.reactivex.Single
 import okhttp3.MediaType
@@ -14,8 +13,6 @@ class FaceRepository(val api: CFRApi) : FaceDataSource {
 
     override fun getFaces(file: File): Single<List<FaceEntity>> {
         return api.face(Constants.CLIENT_ID, Constants.CLIENT_SECRET, createMultipartBody(file))
-                .subscribeOn(SchedulerProvider.io())
-                .observeOn(SchedulerProvider.ui())
                 .map { data ->
                     data.faces.map { face ->
                         val gender = face.gender?.let {
@@ -45,8 +42,6 @@ class FaceRepository(val api: CFRApi) : FaceDataSource {
 
     override fun getCelebrityFaces(file: File): Single<List<FaceEntity>> {
         return api.celebrity(Constants.CLIENT_ID, Constants.CLIENT_SECRET, createMultipartBody(file))
-                .subscribeOn(SchedulerProvider.io())
-                .observeOn(SchedulerProvider.ui())
                 .map { data ->
                     data.faces.map { face ->
                         val celebrity = face.celebrity?.let {
