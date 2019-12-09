@@ -16,16 +16,12 @@ class NetworkModule(private val baseUrl: String) {
     @Singleton
     @Provides
     fun provideRetrofit(): Retrofit {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.NONE
+        val clientBuilder = OkHttpClient.Builder()
 
-            if(BuildConfig.DEBUG) {
+        if(BuildConfig.DEBUG) {
+            clientBuilder.addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
-            }
-        }
-
-        val clientBuilder = OkHttpClient.Builder().apply {
-            addInterceptor(loggingInterceptor)
+            })
         }
 
         return Retrofit.Builder()
