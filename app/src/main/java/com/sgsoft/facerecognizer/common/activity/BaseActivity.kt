@@ -16,7 +16,7 @@ import dagger.android.HasFragmentInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-abstract class BaseActivity<in V : IView, T : IPresenter<V>> : AppCompatActivity(),
+abstract class BaseActivity<V : IView, T : IPresenter<V>> : AppCompatActivity(),
         IView, HasFragmentInjector, HasSupportFragmentInjector {
 
     @Inject lateinit var supportFragmentInjector: DispatchingAndroidInjector<Fragment>
